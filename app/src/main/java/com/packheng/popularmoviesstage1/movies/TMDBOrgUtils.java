@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package com.packheng.popularmoviesstage1.utils;
+package com.packheng.popularmoviesstage1.movies;
 
 import android.util.Log;
-
-import com.packheng.popularmoviesstage1.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +77,7 @@ public class TMDBOrgUtils {
      * @return {@link ArrayList<Movie>} or null.
      */
     private static ArrayList<Movie> extractMoviesfromJsonString(String jsonString) {
+        Log.d(LOG_TAG, "TAF: start of extractMoviesfromJsonString()");
 
         if (jsonString.isEmpty()) {
             return null;
@@ -123,6 +122,7 @@ public class TMDBOrgUtils {
                     }
                     movie.setPosterUrl(posterUrl);
                     movies.add(movie);
+//                    Log.d(LOG_TAG, "TAG: " + movie.toString() + "\n");
                 }
             }
         } catch (JSONException e) {

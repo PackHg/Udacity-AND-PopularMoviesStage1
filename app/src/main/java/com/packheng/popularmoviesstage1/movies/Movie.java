@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.packheng.popularmoviesstage1.model;
+package com.packheng.popularmoviesstage1.movies;
 
 /**
  * {@link Movie} class encapsulates data that are relevant to a movie.
@@ -75,5 +75,16 @@ public class Movie {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public String toString() {
+        final String NL = "\n";
+
+        return "Title: " + getTitle() + NL +
+                "Overview: " + getOverview() + NL +
+                "Poster url: " + getPosterUrl() + NL +
+                "User rating: " + getUserRating() + NL +
+                "Release date: "+ getReleaseDate() + NL;
     }
 }

@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Popular Movies (Stage 1)</string>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="movie_poster">A movie poster</string>
+
+    <!-- Warning messages -->
+    <string name="no_internet">No Internet. Please check access to the Internet.</string>
+    <string name="no_movies_data">No movies data found</string>
 </resources>
