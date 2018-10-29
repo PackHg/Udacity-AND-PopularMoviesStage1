@@ -17,6 +17,7 @@
 package com.packheng.popularmoviesstage1.movies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,8 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.packheng.popularmoviesstage1.DetailActivity;
 import com.packheng.popularmoviesstage1.R;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +41,7 @@ import butterknife.ButterKnife;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     private static final String LOG_TAG = MovieViewHolder.class.getSimpleName();
 
+    public static final String MOVIE_POSITION_KEY = "movie_position_key";
     private final Context context;
     private List<Movie> movies;
 
@@ -60,9 +62,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-
-                    Toast.makeText(context, "Position " + position, Toast.LENGTH_LONG).show();
-                    // TODO: Starts DetailActivity
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(MOVIE_POSITION_KEY, position);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -83,12 +85,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         Movie movie = movies.get(position);
         String posterUrl = movie.getPosterUrl();
-        if (!posterUrl.isEmpty()) {
-            Picasso.with(context).load(posterUrl).into(holder.movieImageView);
-        } else {
-            // TODO: Display movie title instead
-        }
-
+        Picasso.with(context).load(posterUrl).into(holder.movieImageView);
     }
 
     @Override

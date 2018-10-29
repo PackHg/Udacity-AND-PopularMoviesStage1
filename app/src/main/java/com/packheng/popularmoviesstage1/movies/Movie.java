@@ -61,7 +61,7 @@ public class Movie {
         this.overview = overview;
     }
 
-    Double getUserRating() {
+    public Double getUserRating() {
         return userRating;
     }
 

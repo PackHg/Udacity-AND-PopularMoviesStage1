@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    private ArrayList<Movie> movies;
+    static ArrayList<Movie> movies;
     private static final int MOVIES_LOADER_ID = 0;
     private MoviesAdapter moviesAdapter;
 
@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity
         moviesRecyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(this, movies);
         moviesRecyclerView.setAdapter(moviesAdapter);
-//        moviesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        moviesRecyclerView.addItemDecoration(new DividerItemDecoration(this,
-//                LinearLayoutManager.VERTICAL));
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(this,
                 NUMBER_OF_COLUMNS));
 
