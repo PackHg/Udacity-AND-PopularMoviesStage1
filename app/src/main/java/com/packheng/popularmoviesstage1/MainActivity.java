@@ -3,8 +3,10 @@ package com.packheng.popularmoviesstage1;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +32,6 @@ import static com.packheng.popularmoviesstage1.utils.NetworkAndRemoteDataUtils.i
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
-
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     static ArrayList<Movie> movies;
@@ -62,30 +63,28 @@ public class MainActivity extends AppCompatActivity
         moviesRecyclerView.setAdapter(moviesAdapter);
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(this,
                 NUMBER_OF_COLUMNS));
+    }
 
-        if (isNetworkConnected(this)) {
-            loadingSpinner.setVisibility(View.VISIBLE);
-            emptyTextView.setVisibility(View.GONE);
-            LoaderManager loaderManager = getLoaderManager();
-            loaderManager.initLoader(MOVIES_LOADER_ID, null, this);
-        } else {
-            loadingSpinner.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(R.string.no_internet);
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadMoviesData();
     }
 
     /**
-     * Reloads movies data.
+     * Loads movies data by starting {@link MoviesLoader}.
      */
-    private void reloadMoviesData() {
+    private void loadMoviesData() {
+        Log.d(LOG_TAG, "loadMoviesData()");
         if (isNetworkConnected(this)) {
             loadingSpinner.setVisibility(View.VISIBLE);
+            moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.GONE);
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.restartLoader(MOVIES_LOADER_ID, null, this);
         } else {
             loadingSpinner.setVisibility(View.GONE);
+            moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.no_internet);
         }
@@ -104,6 +103,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.menu_item_refresh:
                 Toast.makeText(this, R.string.menu_item_refresh, Toast.LENGTH_SHORT).show();
+                loadMoviesData();
                 return true;
 
             case R.id.menu_item_settings:
@@ -121,12 +121,28 @@ public class MainActivity extends AppCompatActivity
         // Base URL for querying TheMovieDb.org API.
         final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
         final String API_KEY = BuildConfig.ApiKey;
+        final String POPULARITY_DESC = "popularity.desc";
+        final String VOTE_AVERAGE_DESC = "vote_average.desc";
+
+        // Gets the sort by type from SharedPreferences
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortByPref = sp.getString(getString(R.string.pref_order_by_key),
+                getString(R.string.pref_order_by_most_popular));
+
+        String sortBy;
+        if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
+            sortBy = VOTE_AVERAGE_DESC;
+        } else {
+            sortBy = POPULARITY_DESC;
+        }
+
+        Toast.makeText(this, sortBy, Toast.LENGTH_SHORT).show();
 
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("api_key", API_KEY);
-        uriBuilder.appendQueryParameter("sort_by", "popularity.desc");
+        uriBuilder.appendQueryParameter("sort_by", sortBy);
 
         Log.d(LOG_TAG, "TAG: onCreateLoader()");
 
@@ -139,6 +155,7 @@ public class MainActivity extends AppCompatActivity
 
         if (data != null && data.size() > 0) {
             emptyTextView.setVisibility(View.GONE);
+            moviesRecyclerView.setVisibility(View.VISIBLE);
             movies.clear();
             movies.addAll(data);
             moviesAdapter.notifyDataSetChanged();
