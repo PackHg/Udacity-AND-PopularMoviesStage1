@@ -1,6 +1,7 @@
 package com.packheng.popularmoviesstage1;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.packheng.popularmoviesstage1.movies.Movie;
 import com.packheng.popularmoviesstage1.movies.MoviesAdapter;
@@ -84,6 +88,31 @@ public class MainActivity extends AppCompatActivity
             loadingSpinner.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.no_internet);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_item_refresh:
+                Toast.makeText(this, R.string.menu_item_refresh, Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.menu_item_settings:
+                Toast.makeText(this, R.string.menu_item_settings, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default: return super.onOptionsItemSelected(item);
         }
     }
 
