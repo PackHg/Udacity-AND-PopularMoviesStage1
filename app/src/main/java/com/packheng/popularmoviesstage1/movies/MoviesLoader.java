@@ -18,7 +18,6 @@ package com.packheng.popularmoviesstage1.movies;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.util.Log;
 
 import java.util.List;
 
@@ -53,8 +52,6 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
             return null;
         }
 
-        Log.d(LOG_TAG, "TAG: loadInBackground()");
-
         return fetchMoviesData(url);
     }
 
@@ -63,7 +60,6 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
      */
     @Override
     protected void onStartLoading() {
-        Log.d(LOG_TAG, "TAG: onStartLoading()");
         forceLoad();
     }
 }

@@ -15,25 +15,28 @@
     <string name="menu_item_settings">Settings</string>
 
     <!-- Settings -->
-    <string name="pref_order_by_label">Order by</string>
-    <string name="pref_order_by_key" translatable="false">Order by</string>
-    <string name="pref_order_by_default">@string/pref_order_by_most_popular</string>
-    <string name="pref_order_by_most_popular">Most popular</string>
+    <string name="pref_sort_by_label">Sort by</string>
+    <string name="pref_sort_by_key" translatable="false">Sort by</string>
+    <string name="pref_sort_by_default">@string/pref_sort_by_most_popular</string>
+    <string name="pref_sort_by_most_popular">Most popular</string>
     <string name="pref_sort_by_top_rated">Top rated</string>
 
     <string-array name="pref_sort_by_entries">
-        <item>@string/pref_order_by_most_popular</item>
+        <item>@string/pref_sort_by_most_popular</item>
         <item>@string/pref_sort_by_top_rated</item>
     </string-array>
 
     <string-array name="pref_sort_by_values">
-        <item>@string/pref_order_by_most_popular</item>
+        <item>@string/pref_sort_by_most_popular</item>
         <item>@string/pref_sort_by_top_rated</item>
     </string-array>
 
     <!-- Warning messages -->
-    <string name="no_internet">No Internet. Please check access to the Internet.</string>
-    <string name="no_movies_data">No movies data found.</string>
+    <string name="no_internet">No Internet.\n Please check network connectivity.</string>
+    <string name="no_movies_data_found">No movies data found.</string>
+    <string name="no_poster_found">No poster found</string>
+    <string name="unknown">Unknown</string>
+    <string name="no_overview_found">No overview found</string>
 
     <!-- Example -->
     <string name="blade_runner_title">Blade Runner: Final Cut</string>

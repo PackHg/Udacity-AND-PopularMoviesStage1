@@ -21,7 +21,11 @@
     <dimen name="default_vertical_margin">@dimen/default_margin</dimen>
 
     <!-- Width and height of the movie image item in the recycler view -->
-    <dimen name="movie_image_width">185dp</dimen>
-    <dimen name="movie_image_height">278dp</dimen>
+    <dimen name="main_movie_image_width">160dp</dimen>
+    <dimen name="main_movie_image_height">240dp</dimen>
+
+    <!-- Width and height of the movie image in the details view -->
+    <dimen name="detail_movie_image_width">185dp</dimen>
+    <dimen name="detail_movie_image_height">278dp</dimen>
 
 </resources>

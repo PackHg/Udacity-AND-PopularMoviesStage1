@@ -20,11 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.packheng.popularmoviesstage1.DetailActivity;
 import com.packheng.popularmoviesstage1.R;
@@ -53,6 +53,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     class MovieViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.movie_item_iv) ImageView movieImageView;
+        @BindView(R.id.movie_item_empty_view) TextView movieEmptyTextView;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
@@ -73,25 +74,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d(LOG_TAG, "TAG: Start of onCreateViewHolder()");
-
         View view = LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false);
         return new MovieViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        Log.d(LOG_TAG, "TAG: Start of onBindViewHolder()");
-
         Movie movie = movies.get(position);
         String posterUrl = movie.getPosterUrl();
-        Picasso.with(context).load(posterUrl).into(holder.movieImageView);
+        String title = movie.getTitle();
+        if (!posterUrl.isEmpty()) {
+            holder.movieEmptyTextView.setVisibility(View.GONE);
+            Picasso.with(context).load(posterUrl).into(holder.movieImageView);
+        } else {
+            holder.movieEmptyTextView.setVisibility(View.VISIBLE);
+            holder.movieEmptyTextView.setText(title);
+        }
     }
 
     @Override
     public int getItemCount() {
-        Log.d(LOG_TAG, "TAG: getItemCount()");
-
         return movies.size();
     }
 }

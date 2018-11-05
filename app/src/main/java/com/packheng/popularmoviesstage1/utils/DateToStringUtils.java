@@ -42,7 +42,7 @@ public class DateToStringUtils {
      */
     public static Date stringToDate(String s) {
         SimpleDateFormat dateFormatUTC = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss'Z'" /* ISO-8601 format */,
+                "yyyy-MM-dd" /* ISO-8601 format */,
                 Locale.ENGLISH);
         dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -62,13 +62,14 @@ public class DateToStringUtils {
 
     /**
      * Returns a date string from a {@link Date} using the local {@link DateFormat} with the format
-     * "dd.MM.yyyy".
+     * "MMM dd, yyyy".
      *
      * @param date a {@link Date} object.
      * @return a String.
      */
-    public static String dateToDateString(Date date) {
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());;
+    public static String formatDateToString(Date date) {
+//        DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());;
+        DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);;
         return date != null ? df.format(date) : "";
     }
 }

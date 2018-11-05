@@ -19,6 +19,7 @@ package com.packheng.popularmoviesstage1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,10 +27,14 @@ import com.packheng.popularmoviesstage1.movies.Movie;
 import com.packheng.popularmoviesstage1.movies.MoviesAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.packheng.popularmoviesstage1.utils.DateToStringUtils.formatDateToString;
+import static com.packheng.popularmoviesstage1.utils.DateToStringUtils.stringToDate;
 
 /**
  * Shows the details of a movie.
@@ -37,6 +42,7 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity {
 
     @BindView(R.id.detail_activity_poster_iv) ImageView posterImageView;
+    @BindView(R.id.detail_activity_poster_empty_tv) TextView emptyPosterTextView;
     @BindView(R.id.detail_activity_title_tv) TextView titleTextView;
     @BindView(R.id.detail_activity_user_rating_tv) TextView userRatingTextView;
     @BindView(R.id.detail_activity_release_date_tv) TextView releaseDatetextView;
@@ -54,10 +60,33 @@ public class DetailActivity extends AppCompatActivity {
         int position = intent.getIntExtra(MoviesAdapter.MOVIE_POSITION_KEY, DEFAULT_POSITION);
 
         Movie movie = MainActivity.movies.get(position);
-        Picasso.with(this).load(movie.getPosterUrl()).into(posterImageView);
+
+        String posterUrl = movie.getPosterUrl();
+        if (!posterUrl.isEmpty()) {
+            emptyPosterTextView.setVisibility(View.GONE);
+            Picasso.with(this).load(movie.getPosterUrl()).into(posterImageView);
+        } else {
+            emptyPosterTextView.setVisibility(View.VISIBLE);
+        }
+
         titleTextView.setText(movie.getTitle());
         userRatingTextView.setText(String.format(Locale.getDefault(), "%1.1f", movie.getUserRating()));
-        releaseDatetextView.setText(movie.getReleaseDate());
-        overviewTextView.setText(movie.getOverview());
+
+        String releaseDate = movie.getReleaseDate();
+        if (!releaseDate.isEmpty()) {
+            Date date = stringToDate(releaseDate);
+            releaseDate = formatDateToString(date);
+            releaseDatetextView.setText(releaseDate);
+        } else {
+            releaseDatetextView.setText(getString(R.string.unknown));
+        }
+
+        String overview = movie.getOverview();
+        if (!overview.isEmpty()) {
+            overviewTextView.setText(movie.getOverview());
+        } else {
+            overviewTextView.setText(getString(R.string.no_overview_found));
+        }
+
     }
 }

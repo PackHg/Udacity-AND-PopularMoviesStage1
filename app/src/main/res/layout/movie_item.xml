@@ -16,8 +16,8 @@
   -->
 
 <!-- Layout for a single movie movie item in a grid view -->
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -25,10 +25,24 @@
 
     <ImageView
         android:id="@+id/movie_item_iv"
-        android:layout_width="@dimen/movie_image_width"
-        android:layout_height="@dimen/movie_image_height"
+        android:layout_width="@dimen/main_movie_image_width"
+        android:layout_height="@dimen/main_movie_image_height"
         android:contentDescription="@string/movie_poster"
         android:scaleType="centerCrop"
         tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/movie_item_empty_view"
+        android:layout_width="@dimen/main_movie_image_width"
+        android:layout_height="@dimen/main_movie_image_height"
+        android:background="@drawable/orange_rectangle"
+        android:gravity="center"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Movie title"/>
 
 </android.support.constraint.ConstraintLayout>

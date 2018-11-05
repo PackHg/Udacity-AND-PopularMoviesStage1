@@ -63,7 +63,7 @@ public class TMDBOrgUtils {
             return null;
         }
 
-        //  Return the list of News extracted from the JSON response.
+        //  Returns the list of News extracted from the JSON response.
         return extractMoviesfromJsonString(jsonResponse);
     }
 
@@ -77,7 +77,6 @@ public class TMDBOrgUtils {
      * @return {@link ArrayList<Movie>} or null.
      */
     private static ArrayList<Movie> extractMoviesfromJsonString(String jsonString) {
-        Log.d(LOG_TAG, "TAF: start of extractMoviesfromJsonString()");
 
         if (jsonString.isEmpty()) {
             return null;
@@ -117,12 +116,11 @@ public class TMDBOrgUtils {
                     // Builds the poster url string
                     String posterUrl = "";
                     String posterPath = resultsItem.optString(POSTER_PATH_KEY);
-                    if (!posterPath.isEmpty()) {
+                    if (!posterPath.isEmpty() && !posterPath.equals("null")) {
                         posterUrl = baseUrl + imageSize + posterPath;
                     }
                     movie.setPosterUrl(posterUrl);
                     movies.add(movie);
-//                    Log.d(LOG_TAG, "TAG: " + movie.toString() + "\n");
                 }
             }
         } catch (JSONException e) {

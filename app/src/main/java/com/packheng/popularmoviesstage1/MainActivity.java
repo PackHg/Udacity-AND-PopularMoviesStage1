@@ -10,13 +10,11 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.packheng.popularmoviesstage1.movies.Movie;
 import com.packheng.popularmoviesstage1.movies.MoviesAdapter;
@@ -34,8 +32,8 @@ public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<List<Movie>> {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    static ArrayList<Movie> movies;
     private static final int MOVIES_LOADER_ID = 0;
+    static ArrayList<Movie> movies;
     private MoviesAdapter moviesAdapter;
 
     @BindView(R.id.movies_rv) RecyclerView moviesRecyclerView;
@@ -61,21 +59,15 @@ public class MainActivity extends AppCompatActivity
         moviesRecyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(this, movies);
         moviesRecyclerView.setAdapter(moviesAdapter);
-        moviesRecyclerView.setLayoutManager(new GridLayoutManager(this,
-                NUMBER_OF_COLUMNS));
-    }
+        moviesRecyclerView.setLayoutManager(new GridLayoutManager(this, NUMBER_OF_COLUMNS));
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         loadMoviesData();
     }
 
     /**
-     * Loads movies data by starting {@link MoviesLoader}.
+     * Loads movies data by starting a {@link MoviesLoader}.
      */
     private void loadMoviesData() {
-        Log.d(LOG_TAG, "loadMoviesData()");
         if (isNetworkConnected(this)) {
             loadingSpinner.setVisibility(View.VISIBLE);
             moviesRecyclerView.setVisibility(View.GONE);
@@ -102,12 +94,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.menu_item_refresh:
-                Toast.makeText(this, R.string.menu_item_refresh, Toast.LENGTH_SHORT).show();
+                movies.clear();
+                moviesAdapter.notifyDataSetChanged();
                 loadMoviesData();
                 return true;
 
             case R.id.menu_item_settings:
-                Toast.makeText(this, R.string.menu_item_settings, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
@@ -126,8 +118,8 @@ public class MainActivity extends AppCompatActivity
 
         // Gets the sort by type from SharedPreferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortByPref = sp.getString(getString(R.string.pref_order_by_key),
-                getString(R.string.pref_order_by_most_popular));
+        String sortByPref = sp.getString(getString(R.string.pref_sort_by_key),
+                getString(R.string.pref_sort_by_most_popular));
 
         String sortBy;
         if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
@@ -136,15 +128,10 @@ public class MainActivity extends AppCompatActivity
             sortBy = POPULARITY_DESC;
         }
 
-        Toast.makeText(this, sortBy, Toast.LENGTH_SHORT).show();
-
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
-
         uriBuilder.appendQueryParameter("api_key", API_KEY);
         uriBuilder.appendQueryParameter("sort_by", sortBy);
-
-        Log.d(LOG_TAG, "TAG: onCreateLoader()");
 
         return new MoviesLoader(this, uriBuilder.toString());
     }
@@ -161,16 +148,13 @@ public class MainActivity extends AppCompatActivity
             moviesAdapter.notifyDataSetChanged();
         } else {
             emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(R.string.no_movies_data);
+            emptyTextView.setText(R.string.no_movies_data_found);
         }
-
-        Log.d(LOG_TAG, "TAG: onLoadFinished()");
     }
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
         movies.clear();
         moviesAdapter.notifyDataSetChanged();
-        Log.d(LOG_TAG, "TAG: onLoaderReset()");
     }
 }

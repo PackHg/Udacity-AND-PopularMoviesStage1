@@ -16,6 +16,7 @@
 
 package com.packheng.popularmoviesstage1;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -40,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings_main);
 
-            Preference sortBy = findPreference(getString(R.string.pref_order_by_key));
+            Preference sortBy = findPreference(getString(R.string.pref_sort_by_key));
             bindPreferenceSummaryToValue(sortBy);
         }
 
@@ -58,5 +59,13 @@ public class SettingsActivity extends AppCompatActivity {
             String preferenceString = preferences.getString(preference.getKey(),"");
             onPreferenceChange(preference, preferenceString);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
