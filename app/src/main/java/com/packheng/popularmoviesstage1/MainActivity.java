@@ -110,28 +110,29 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        // Base URL for querying TheMovieDb.org API.
-        final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
-        final String API_KEY = BuildConfig.ApiKey;
-        final String POPULARITY_DESC = "popularity.desc";
-        final String VOTE_AVERAGE_DESC = "vote_average.desc";
+        // Base URL and end points for querying TheMovieDb.org API.
+        final String BASE_URL = "https://api.themoviedb.org/3";
+        final String MOST_POPULAR_ENDPOINT = "/movie/popular";
+        final String TOP_RATED_ENDPOINT = "/movie/top_rated";
+
+        final String API_KEY = "api_key";
+        final String API_KEY_VALUE = BuildConfig.ApiKey;
 
         // Gets the sort by type from SharedPreferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         String sortByPref = sp.getString(getString(R.string.pref_sort_by_key),
                 getString(R.string.pref_sort_by_most_popular));
 
-        String sortBy;
+        String url;
         if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
-            sortBy = VOTE_AVERAGE_DESC;
+            url = BASE_URL + TOP_RATED_ENDPOINT;
         } else {
-            sortBy = POPULARITY_DESC;
+            url = BASE_URL + MOST_POPULAR_ENDPOINT;
         }
 
-        Uri baseUri = Uri.parse(BASE_URL);
+        Uri baseUri = Uri.parse(url);
         Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendQueryParameter("api_key", API_KEY);
-        uriBuilder.appendQueryParameter("sort_by", sortBy);
+        uriBuilder.appendQueryParameter(API_KEY, API_KEY_VALUE);
 
         return new MoviesLoader(this, uriBuilder.toString());
     }
