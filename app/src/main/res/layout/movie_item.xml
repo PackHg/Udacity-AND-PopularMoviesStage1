@@ -25,16 +25,16 @@
 
     <ImageView
         android:id="@+id/movie_item_iv"
-        android:layout_width="@dimen/main_movie_image_width"
-        android:layout_height="@dimen/main_movie_image_height"
+        android:layout_width="@dimen/main_movie_poster_width"
+        android:layout_height="@dimen/main_movie_poster_height"
         android:contentDescription="@string/movie_poster"
         android:scaleType="centerCrop"
         tools:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/movie_item_empty_view"
-        android:layout_width="@dimen/main_movie_image_width"
-        android:layout_height="@dimen/main_movie_image_height"
+        android:layout_width="@dimen/main_movie_poster_width"
+        android:layout_height="@dimen/main_movie_poster_height"
         android:background="@drawable/orange_rectangle"
         android:gravity="center"
         android:textAppearance="?android:textAppearanceSmall"

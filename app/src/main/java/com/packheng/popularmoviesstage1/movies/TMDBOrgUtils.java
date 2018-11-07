@@ -109,7 +109,7 @@ public class TMDBOrgUtils {
                     Movie movie = new Movie();
 
                     movie.setTitle(resultsItem.optString(ORIGINAL_TITLE_KEY));
-                    movie.setOverview(resultsItem.optString(OVERVIEW_KEY));
+                    movie.setPlotSynopsis(resultsItem.optString(OVERVIEW_KEY));
                     movie.setUserRating(resultsItem.optDouble(VOTE_AVERAGE_KEY));
                     movie.setReleaseDate(resultsItem.optString(RELEASE_DATE_KEY));
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2018 Pack Heng
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.packheng.popularmoviesstage1;
 
 import android.app.LoaderManager;
@@ -10,6 +26,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +65,8 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         // Number of columns in the RecyclerView
-        final int NUMBER_OF_COLUMNS = 2;
+        int numberOfColumns = calculateBestSpanCount((int) getResources()
+                .getDimension(R.dimen.main_movie_poster_width));
 
         movies = new ArrayList<Movie>();
 
@@ -59,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         moviesRecyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(this, movies);
         moviesRecyclerView.setAdapter(moviesAdapter);
-        moviesRecyclerView.setLayoutManager(new GridLayoutManager(this, NUMBER_OF_COLUMNS));
+        moviesRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         loadMoviesData();
     }
@@ -157,5 +176,20 @@ public class MainActivity extends AppCompatActivity
     public void onLoaderReset(Loader<List<Movie>> loader) {
         movies.clear();
         moviesAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Calculates best number of columns in the grid view depending of the poster width
+     * and the screen width.
+     *
+     * @param posterWidth
+     * @return
+     */
+    private int calculateBestSpanCount(int posterWidth) {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        float screenWidth = outMetrics.widthPixels;
+        return Math.round(screenWidth / posterWidth);
     }
 }

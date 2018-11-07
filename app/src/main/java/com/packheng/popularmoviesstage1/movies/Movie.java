@@ -22,17 +22,17 @@ package com.packheng.popularmoviesstage1.movies;
 public class Movie {
     private String title;
     private String posterUrl;
-    private String overview;
+    private String plotSynopsis;
     private double userRating;
     private String releaseDate;
 
     public Movie() {
     }
 
-    public Movie(String title, String posterUrl, String overview, double userRating, String releaseDate) {
+    public Movie(String title, String posterUrl, String plotSynopsis, double userRating, String releaseDate) {
         this.title = title;
         this.posterUrl = posterUrl;
-        this.overview = overview;
+        this.plotSynopsis = plotSynopsis;
         this.userRating = userRating;
         this.releaseDate = releaseDate;
     }
@@ -53,12 +53,12 @@ public class Movie {
         this.posterUrl = posterUrl;
     }
 
-    public String getOverview() {
-        return overview;
+    public String getPlotSynopsis() {
+        return plotSynopsis;
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
+    public void setPlotSynopsis(String plotSynopsis) {
+        this.plotSynopsis = plotSynopsis;
     }
 
     public Double getUserRating() {
@@ -82,7 +82,7 @@ public class Movie {
         final String NL = "\n";
 
         return "Title: " + getTitle() + NL +
-                "Overview: " + getOverview() + NL +
+                "Overview: " + getPlotSynopsis() + NL +
                 "Poster url: " + getPosterUrl() + NL +
                 "User rating: " + getUserRating() + NL +
                 "Release date: "+ getReleaseDate() + NL;

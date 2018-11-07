@@ -41,8 +41,8 @@
 
         <ImageView
             android:id="@+id/detail_activity_poster_iv"
-            android:layout_width="@dimen/detail_movie_image_width"
-            android:layout_height="@dimen/detail_movie_image_height"
+            android:layout_width="@dimen/detail_movie_poster_width"
+            android:layout_height="@dimen/detail_movie_poster_height"
             android:layout_marginTop="@dimen/default_margin"
             android:contentDescription="@string/movie_poster"
             android:scaleType="centerCrop"
@@ -52,8 +52,8 @@
 
         <TextView
             android:id="@+id/detail_activity_poster_empty_tv"
-            android:layout_width="@dimen/detail_movie_image_width"
-            android:layout_height="@dimen/detail_movie_image_height"
+            android:layout_width="@dimen/detail_movie_poster_width"
+            android:layout_height="@dimen/detail_movie_poster_height"
             android:background="@drawable/orange_rectangle"
             android:gravity="center"
             android:text="@string/no_poster_found"
@@ -93,7 +93,7 @@
             tools:text="@string/blade_runner_release_date" />
 
         <TextView
-            android:id="@+id/detail_activity_overview_tv"
+            android:id="@+id/detail_activity_plot_synopsis_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"

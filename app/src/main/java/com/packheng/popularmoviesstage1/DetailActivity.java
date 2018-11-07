@@ -46,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detail_activity_title_tv) TextView titleTextView;
     @BindView(R.id.detail_activity_user_rating_tv) TextView userRatingTextView;
     @BindView(R.id.detail_activity_release_date_tv) TextView releaseDatetextView;
-    @BindView(R.id.detail_activity_overview_tv) TextView overviewTextView;
+    @BindView(R.id.detail_activity_plot_synopsis_tv) TextView overviewTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +81,11 @@ public class DetailActivity extends AppCompatActivity {
             releaseDatetextView.setText(getString(R.string.unknown));
         }
 
-        String overview = movie.getOverview();
+        String overview = movie.getPlotSynopsis();
         if (!overview.isEmpty()) {
-            overviewTextView.setText(movie.getOverview());
+            overviewTextView.setText(movie.getPlotSynopsis());
         } else {
-            overviewTextView.setText(getString(R.string.no_overview_found));
+            overviewTextView.setText(getString(R.string.no_plot_synopsis_found));
         }
 
     }

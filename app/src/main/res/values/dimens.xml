@@ -20,12 +20,12 @@
     <dimen name="default_horizontal_margin">@dimen/default_margin</dimen>
     <dimen name="default_vertical_margin">@dimen/default_margin</dimen>
 
-    <!-- Width and height of the movie image item in the recycler view -->
-    <dimen name="main_movie_image_width">160dp</dimen>
-    <dimen name="main_movie_image_height">240dp</dimen>
+    <!-- Width and height of the movie poster item in the recycler view -->
+    <dimen name="main_movie_poster_width">185dp</dimen>
+    <dimen name="main_movie_poster_height">278dp</dimen>
 
-    <!-- Width and height of the movie image in the details view -->
-    <dimen name="detail_movie_image_width">185dp</dimen>
-    <dimen name="detail_movie_image_height">278dp</dimen>
+    <!-- Width and height of the movie poster in the details view -->
+    <dimen name="detail_movie_poster_width">185dp</dimen>
+    <dimen name="detail_movie_poster_height">278dp</dimen>
 
 </resources>

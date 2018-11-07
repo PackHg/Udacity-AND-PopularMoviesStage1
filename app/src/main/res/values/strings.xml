@@ -36,7 +36,7 @@
     <string name="no_movies_data_found">No movies data found.</string>
     <string name="no_poster_found">No poster found</string>
     <string name="unknown">Unknown</string>
-    <string name="no_overview_found">No overview found</string>
+    <string name="no_plot_synopsis_found">No plot synopsis found</string>
 
     <!-- Example -->
     <string name="blade_runner_title">Blade Runner: Final Cut</string>
