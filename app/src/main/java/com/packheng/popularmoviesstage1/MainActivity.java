@@ -22,7 +22,9 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +33,6 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.packheng.popularmoviesstage1.movies.Movie;
@@ -55,8 +56,8 @@ public class MainActivity extends AppCompatActivity
     private MoviesAdapter moviesAdapter;
 
     @BindView(R.id.movies_rv) RecyclerView moviesRecyclerView;
-    @BindView(R.id.loading_spinner) ProgressBar loadingSpinner;
     @BindView(R.id.empty_tv) TextView emptyTextView;
+    @BindView(R.id.swipe_refrsh) SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         movies = new ArrayList<Movie>();
 
         moviesRecyclerView.setVisibility(View.VISIBLE);
-        loadingSpinner.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
 
         // Sets up the RecyclerView.
@@ -80,6 +80,14 @@ public class MainActivity extends AppCompatActivity
         moviesRecyclerView.setAdapter(moviesAdapter);
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
+        // Sets up a setOnRefreshListener to  when user performs a swipe-to-refresh gesture.
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadMoviesData();
+            }
+        });
+
         loadMoviesData();
     }
 
@@ -87,14 +95,18 @@ public class MainActivity extends AppCompatActivity
      * Loads movies data by starting a {@link MoviesLoader}.
      */
     private void loadMoviesData() {
+        swipeRefreshLayout.setRefreshing(true);
+
+        // TODO: to remove
+        waitFor(2000);
+
         if (isNetworkConnected(this)) {
-            loadingSpinner.setVisibility(View.VISIBLE);
             moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.GONE);
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.restartLoader(MOVIES_LOADER_ID, null, this);
         } else {
-            loadingSpinner.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
             moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.no_internet);
@@ -158,7 +170,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-        loadingSpinner.setVisibility(View.GONE);
+
+        swipeRefreshLayout.setRefreshing(false);
+
+        waitFor(1000);
 
         if (data != null && data.size() > 0) {
             emptyTextView.setVisibility(View.GONE);
@@ -170,6 +185,8 @@ public class MainActivity extends AppCompatActivity
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.no_movies_data_found);
         }
+
+
     }
 
     @Override
@@ -192,4 +209,14 @@ public class MainActivity extends AppCompatActivity
         float screenWidth = outMetrics.widthPixels;
         return Math.round(screenWidth / posterWidth);
     }
+
+    private void waitFor(int milliseconds) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after: nothing
+            }
+        }, milliseconds);
+    }
+
 }

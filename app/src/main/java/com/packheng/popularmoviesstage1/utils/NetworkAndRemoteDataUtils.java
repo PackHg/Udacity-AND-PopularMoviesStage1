@@ -17,8 +17,6 @@
 package com.packheng.popularmoviesstage1.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -54,47 +52,6 @@ public class NetworkAndRemoteDataUtils {
         }
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
-    /**
-     * Loads an image from a given URL and turn it into a Bitmap.
-     * Returns null if there's issue in getting the {@link Bitmap} or the srcUrl is empty.
-     *
-     * @param srcUrl Image source Url (a String).
-     * @return Image Bitmap.
-     */
-    public static Bitmap getBitmapFromURL(String srcUrl) {
-
-        if (srcUrl.isEmpty()) {
-            return null;
-        }
-
-        HttpURLConnection connection = null;
-        InputStream input = null;
-
-        try {
-            URL url = new URL(srcUrl);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            input = connection.getInputStream();
-            // Use Android’s BitmapFactory class to decode the input stream
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem in getting a Bitmap from the given URL string.", e);
-            return null;
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Problem in closing the inputStream.", e);
-                }
-            }
-        }
     }
 
     /**
