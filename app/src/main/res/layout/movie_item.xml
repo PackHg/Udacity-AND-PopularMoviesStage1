@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<!-- Layout for a single movie movie item in a grid view -->
+<!-- Layout for a single movie item in a grid view -->
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

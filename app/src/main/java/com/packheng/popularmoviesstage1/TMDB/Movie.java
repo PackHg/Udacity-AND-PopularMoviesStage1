@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.packheng.popularmoviesstage1.movies;
+package com.packheng.popularmoviesstage1.TMDB;
 
 /**
  * {@link Movie} class encapsulates data that are relevant to a movie.

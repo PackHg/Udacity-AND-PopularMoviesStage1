@@ -16,15 +16,12 @@
 
 package com.packheng.popularmoviesstage1;
 
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,23 +32,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.packheng.popularmoviesstage1.movies.Movie;
-import com.packheng.popularmoviesstage1.movies.MoviesAdapter;
-import com.packheng.popularmoviesstage1.movies.MoviesLoader;
+import com.packheng.popularmoviesstage1.TMDB.Movie;
+import com.packheng.popularmoviesstage1.TMDB.MoviesAdapter;
+import com.packheng.popularmoviesstage1.TMDB.TMDBEndpointInterface;
+import com.packheng.popularmoviesstage1.TMDB.TMDBResponse;
+import com.packheng.popularmoviesstage1.TMDB.TMDBResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.packheng.popularmoviesstage1.utils.NetworkAndRemoteDataUtils.isNetworkConnected;
+import static com.packheng.popularmoviesstage1.utils.NetworkUtils.isNetworkConnected;
 
-public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Movie>> {
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+public class MainActivity extends AppCompatActivity {
 
-    private static final int MOVIES_LOADER_ID = 0;
+    private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/";
+
     static ArrayList<Movie> movies;
     private MoviesAdapter moviesAdapter;
 
@@ -59,17 +62,19 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.empty_tv) TextView emptyTextView;
     @BindView(R.id.swipe_refrsh) SwipeRefreshLayout swipeRefreshLayout;
 
+    private TMDBEndpointInterface apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Number of columns in the RecyclerView
+        // Sets number of columns in the RecyclerView.
         int numberOfColumns = calculateBestSpanCount((int) getResources()
                 .getDimension(R.dimen.main_movie_poster_width));
 
-        movies = new ArrayList<Movie>();
+        movies = new ArrayList<>();
 
         moviesRecyclerView.setVisibility(View.VISIBLE);
         emptyTextView.setVisibility(View.GONE);
@@ -88,23 +93,89 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // Creates the Retrofit instance and constructs a service leveraging TMBDEndpointInterface.
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TMDB_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiService = retrofit.create(TMDBEndpointInterface.class);
+
         loadMoviesData();
     }
 
     /**
-     * Loads movies data by starting a {@link MoviesLoader}.
+     * Loads movies data.
      */
     private void loadMoviesData() {
-        swipeRefreshLayout.setRefreshing(true);
+        final String API_KEY_VALUE = BuildConfig.ApiKey;
+        final String BASE_URL = "https://image.tmdb.org/t/p";
+        final String IMAGE_SIZE = "/w185";
+        final String EMPTY_STRING = "";
 
-        // TODO: to remove
-        waitFor(2000);
+        swipeRefreshLayout.setRefreshing(true);
 
         if (isNetworkConnected(this)) {
             moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.GONE);
-            LoaderManager loaderManager = getLoaderManager();
-            loaderManager.restartLoader(MOVIES_LOADER_ID, null, this);
+
+            // Gets the sort by type from SharedPreferences
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            String sortByPref = sp.getString(getString(R.string.pref_sort_by_key),
+                    getString(R.string.pref_sort_by_most_popular));
+
+            // Accessing the API
+            Call<TMDBResponse> call;
+            if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
+                setActionBarTitle(getString(R.string.pref_sort_by_top_rated));
+                call = apiService.topRatedMovies(API_KEY_VALUE);
+            } else {
+                setActionBarTitle(getString(R.string.pref_sort_by_most_popular));
+                call = apiService.popularMovies(API_KEY_VALUE);
+            }
+
+            call.enqueue(new Callback<TMDBResponse>() {
+
+                @Override
+                public void onResponse(Call<TMDBResponse> call, Response<TMDBResponse> response) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    emptyTextView.setVisibility(View.GONE);
+                    moviesRecyclerView.setVisibility(View.VISIBLE);
+
+                    if (response.body() != null) {
+                        List<TMDBResult> results = response.body().getResults();
+                        movies.clear();
+                        for (TMDBResult result: results) {
+                            Movie movie = new Movie();
+                            if (result != null) {
+                                movie.setTitle(result.getOriginalTitle());
+                                if (!result.getPosterPath().isEmpty()) {
+                                    movie.setPosterUrl(BASE_URL + IMAGE_SIZE + result.getPosterPath());
+                                } else {
+                                    movie.setPosterUrl(EMPTY_STRING);
+                                }
+                                movie.setPlotSynopsis(result.getOverview());
+                                movie.setUserRating(result.getVoteAverage());
+                                movie.setReleaseDate(result.getReleaseDate());
+                            }
+                            movies.add(movie);
+                        }
+                        moviesAdapter.notifyDataSetChanged();
+                    } else {
+                        moviesRecyclerView.setVisibility(View.GONE);
+                        emptyTextView.setVisibility(View.VISIBLE);
+                        emptyTextView.setText(R.string.no_movies_data_found);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<TMDBResponse> call, Throwable t) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    moviesRecyclerView.setVisibility(View.GONE);
+                    emptyTextView.setVisibility(View.VISIBLE);
+                    emptyTextView.setText(R.string.issue_with_fetching_data);
+                }
+            });
         } else {
             swipeRefreshLayout.setRefreshing(false);
             moviesRecyclerView.setVisibility(View.GONE);
@@ -125,8 +196,6 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.menu_item_refresh:
-                movies.clear();
-                moviesAdapter.notifyDataSetChanged();
                 loadMoviesData();
                 return true;
 
@@ -139,68 +208,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        // Base URL and end points for querying TheMovieDb.org API.
-        final String BASE_URL = "https://api.themoviedb.org/3";
-        final String MOST_POPULAR_ENDPOINT = "/movie/popular";
-        final String TOP_RATED_ENDPOINT = "/movie/top_rated";
-
-        final String API_KEY = "api_key";
-        final String API_KEY_VALUE = BuildConfig.ApiKey;
-
-        // Gets the sort by type from SharedPreferences
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortByPref = sp.getString(getString(R.string.pref_sort_by_key),
-                getString(R.string.pref_sort_by_most_popular));
-
-        String url;
-        if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
-            url = BASE_URL + TOP_RATED_ENDPOINT;
-        } else {
-            url = BASE_URL + MOST_POPULAR_ENDPOINT;
-        }
-
-        Uri baseUri = Uri.parse(url);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendQueryParameter(API_KEY, API_KEY_VALUE);
-
-        return new MoviesLoader(this, uriBuilder.toString());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
-
-        swipeRefreshLayout.setRefreshing(false);
-
-        waitFor(1000);
-
-        if (data != null && data.size() > 0) {
-            emptyTextView.setVisibility(View.GONE);
-            moviesRecyclerView.setVisibility(View.VISIBLE);
-            movies.clear();
-            movies.addAll(data);
-            moviesAdapter.notifyDataSetChanged();
-        } else {
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(R.string.no_movies_data_found);
-        }
-
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        movies.clear();
-        moviesAdapter.notifyDataSetChanged();
-    }
-
     /**
      * Calculates best number of columns in the grid view depending of the poster width
      * and the screen width.
      *
-     * @param posterWidth
-     * @return
+     * @param posterWidth Width of the poster in dp.
+     * @return number of columns.
      */
     private int calculateBestSpanCount(int posterWidth) {
         Display display = getWindowManager().getDefaultDisplay();
@@ -210,13 +223,16 @@ public class MainActivity extends AppCompatActivity
         return Math.round(screenWidth / posterWidth);
     }
 
-    private void waitFor(int milliseconds) {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                // Actions to do after: nothing
-            }
-        }, milliseconds);
+    /**
+     * Sets the title of the action bar.
+     *
+     * @param title of the action bar.
+     */
+    private void setActionBarTitle(String title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
     }
 
 }

@@ -68,7 +68,6 @@ public class DateToStringUtils {
      * @return a String.
      */
     public static String formatDateToString(Date date) {
-//        DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());;
         DateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);;
         return date != null ? df.format(date) : "";
     }

@@ -23,8 +23,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.packheng.popularmoviesstage1.movies.Movie;
-import com.packheng.popularmoviesstage1.movies.MoviesAdapter;
+import com.packheng.popularmoviesstage1.TMDB.Movie;
+import com.packheng.popularmoviesstage1.TMDB.MoviesAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;

@@ -18,8 +18,8 @@
     <string name="pref_sort_by_label">Sort by</string>
     <string name="pref_sort_by_key" translatable="false">Sort by</string>
     <string name="pref_sort_by_default">@string/pref_sort_by_most_popular</string>
-    <string name="pref_sort_by_most_popular">Most popular</string>
-    <string name="pref_sort_by_top_rated">Top rated</string>
+    <string name="pref_sort_by_most_popular">Most Popular Movies</string>
+    <string name="pref_sort_by_top_rated">Top Rated Movies</string>
 
     <string-array name="pref_sort_by_entries">
         <item>@string/pref_sort_by_most_popular</item>
@@ -34,6 +34,7 @@
     <!-- Warning messages -->
     <string name="no_internet">No Internet.\n Please check network connectivity.</string>
     <string name="no_movies_data_found">No movies data found.</string>
+    <string name="issue_with_fetching_data">Oops! There\'s an issue with loading movies data.</string>
     <string name="no_poster_found">No poster found</string>
     <string name="unknown">Unknown</string>
     <string name="no_plot_synopsis_found">No plot synopsis found</string>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.packheng.popularmoviesstage1.movies;
+package com.packheng.popularmoviesstage1.TMDB;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +39,6 @@ import butterknife.ButterKnife;
  * Provides binding from a data set to views that are displayed within a RecyclerView.
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
-    private static final String LOG_TAG = MovieViewHolder.class.getSimpleName();
 
     public static final String MOVIE_POSITION_KEY = "movie_position_key";
     private final Context context;
