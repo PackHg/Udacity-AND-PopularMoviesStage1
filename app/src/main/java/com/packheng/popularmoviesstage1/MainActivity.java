@@ -51,11 +51,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.packheng.popularmoviesstage1.utils.NetworkUtils.isNetworkConnected;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements SharedPreferences.OnSharedPreferenceChangeListener  {
 
     private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/";
 
     static ArrayList<Movie> movies;
+    private String sortBy;
     private MoviesAdapter moviesAdapter;
 
     @BindView(R.id.movies_rv) RecyclerView moviesRecyclerView;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Sets number of columns in the RecyclerView.
+        // Set number of columns in the RecyclerView.
         int numberOfColumns = calculateBestSpanCount((int) getResources()
                 .getDimension(R.dimen.main_movie_poster_width));
 
@@ -79,13 +81,14 @@ public class MainActivity extends AppCompatActivity {
         moviesRecyclerView.setVisibility(View.VISIBLE);
         emptyTextView.setVisibility(View.GONE);
 
-        // Sets up the RecyclerView.
+        // Set up the RecyclerView.
         moviesRecyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(this, movies);
         moviesRecyclerView.setAdapter(moviesAdapter);
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
-        // Sets up a setOnRefreshListener to  when user performs a swipe-to-refresh gesture.
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.green, R.color.yellow);
+        // Set up a setOnRefreshListener to  when user performs a swipe-to-refresh gesture.
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -93,12 +96,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Creates the Retrofit instance and constructs a service leveraging TMBDEndpointInterface.
+        // Create the Retrofit instance and constructs a service leveraging TMBDEndpointInterface.
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(TMDB_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(TMDBEndpointInterface.class);
+
+        // Get the sort by type from SharedPreferences and register the listener
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sortBy = sp.getString(getString(R.string.pref_sort_by_key),
+                getString(R.string.pref_sort_by_most_popular));
+        sp.registerOnSharedPreferenceChangeListener(this);
 
         loadMoviesData();
     }
@@ -118,14 +127,9 @@ public class MainActivity extends AppCompatActivity {
             moviesRecyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.GONE);
 
-            // Gets the sort by type from SharedPreferences
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            String sortByPref = sp.getString(getString(R.string.pref_sort_by_key),
-                    getString(R.string.pref_sort_by_most_popular));
-
             // Accessing the API
             Call<TMDBResponse> call;
-            if (sortByPref.equals(getString(R.string.pref_sort_by_top_rated))) {
+            if (sortBy.equals(getString(R.string.pref_sort_by_top_rated))) {
                 setActionBarTitle(getString(R.string.pref_sort_by_top_rated));
                 call = apiService.topRatedMovies(API_KEY_VALUE);
             } else {
@@ -208,6 +212,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Reloads the movies if the shared preference (sort by) changes
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_sort_by_key))) {
+            String sortByPref = sharedPreferences.getString(key, sortBy);
+            if (!sortBy.equals(sortByPref)) {
+                sortBy = sortByPref;
+                loadMoviesData();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     /**
      * Calculates best number of columns in the grid view depending of the poster width
      * and the screen width.
@@ -234,5 +258,4 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setTitle(title);
         }
     }
-
 }

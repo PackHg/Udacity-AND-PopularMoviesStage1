@@ -16,14 +16,16 @@
 
 package com.packheng.popularmoviesstage1;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,6 +33,12 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        ActionBar actionBar = this.getSupportActionBar();
+
+        // Set the action bar back button to look like an up button
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public static class SettingsPreferenceFragment extends PreferenceFragment
@@ -62,10 +70,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // When the home button is pressed, take the user back to the MainActivity
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -30,6 +30,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 
+    // Added the gradle dependency for the support preference fragment (backwards
+    // compatibility to API level 9)
+    implementation 'com.android.support:preference-v7:27.1.1'
+
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
     implementation 'com.jakewharton:butterknife:8.8.1'

@@ -7,4 +7,7 @@
     <color name="deepOrange300">#FF8A65</color>
     <color name="deepOrange600">#F4511E</color>
     <color name="deepOrange900">#BF360C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FFd600</color>
+    <color name="green">#00c853</color>
 </resources>
